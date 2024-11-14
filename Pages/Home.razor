@@ -1,0 +1,138 @@
+﻿@page "/"
+@inject IJSRuntime JsRuntime
+
+<h1>Blazor .NET Basit Hesap Makinesi</h1>
+
+<div class="calculator-container">
+    <input @bind="first_number" type="number" placeholder="Birinci Sayıyı Girin" class="number-input" />
+    <div class="operations">
+        <button class="operation-btn" @onclick='() => SetOperation("arti")'>+</button>
+        <button class="operation-btn" @onclick='() => SetOperation("eksi")'>-</button>
+        <button class="operation-btn" @onclick='() => SetOperation("carp")'>*</button>
+        <button class="operation-btn" @onclick='() => SetOperation("bol")'>/</button>
+    </div>
+    <input @bind="second_number" type="number" placeholder="İkinci Sayıyı Girin" class="number-input" />
+    <button class="calculate-btn" @onclick="calculate">Hesapla</button>
+    <div class="result">
+        <span>Sonuç: <strong>@result</strong></span>
+        <span>İşlem: <strong>@islem</strong></span>
+    </div>
+</div>
+
+<style>
+    .calculator-container {
+        width: 300px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 2px solid #4CAF50;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    .number-input {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .operations {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 10px 0;
+    }
+
+    .operation-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .operation-btn:hover {
+        background-color: #45a049;
+    }
+
+    .calculate-btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        color: white;
+        background-color: #2196F3;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .calculate-btn:hover {
+        background-color: #1e88e5;
+    }
+
+    .result {
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    .result span {
+        display: block;
+        margin: 5px 0;
+    }
+
+    strong {
+        font-weight: bold;
+        color: #333;
+    }
+</style>
+
+
+@code
+{
+	private int first_number;
+	private int second_number;
+	private int result;
+	private string? islem; 
+
+	public void SetOperation(string value)
+	{
+		islem = value;
+	}
+
+	public async void calculate()
+	{
+		switch(islem)
+		{
+			case "arti":
+				result = first_number + second_number;
+				break;
+			case "eksi":
+				result = first_number - second_number;
+				break; 
+			case "carp":
+				result = first_number * second_number;
+				break;
+			case "bol":
+				if (second_number == 0)
+				{
+					result = 0;
+					await JsRuntime.InvokeVoidAsync("alert", "Bölen Sayı 0 Olamaz!");
+				}
+				else 
+				{
+					result = first_number / second_number;
+				}
+				break;
+		}
+	}
+}
